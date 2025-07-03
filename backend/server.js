@@ -4,16 +4,15 @@ import db from "./db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import problemRoutes from "./routes/problemRoutes.js";
+import cors from "cors";
 const app = express();
 morgan("tiny")
+
+app.use(cors());
 
 db(); //db connection
 
 app.use(express.json());
-
-app.get('/', (req, res) => {
-    res.send('Hello, JustLeet API is running!');
-})
 
 
 
