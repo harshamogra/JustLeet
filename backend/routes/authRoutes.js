@@ -1,7 +1,21 @@
 import { Router } from "express"
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken'
+
 const router = Router();
+
+const generateAccessToken=(user)=>{
+    return jwt.sign({id:user._id},process.env.JWT_SECRET, {expiresIn:'20s'});
+}
+
+let refreshTokens = [];
+
+const generateRefreshToken = (user)=>{
+    const token = jwt.sign({id:user._id}, process.env.JWT_REFRESH_SECRET, {expiresIn:'7d'});
+    refreshTokens.push(token);
+    return token;
+}
 
 router.post("/register", async(req, res) => {
     
@@ -35,13 +49,23 @@ router.post("/login", async(req, res) => {
         if(!validPassword) {
             return res.status(400).json({ message: "Invalid password" });
         } // Exclude password and email from response
-        return res.status(200).json({
-            _id: user._id,
+       
+        const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+        res.cookie("refreshtoken",refreshToken,{
+            httpOnly:true,
+            secure:false,
+            sameSite: 'strict',
+        })
+
+         return res.status(200).json({
             leetcodeId: user.leetcodeId,
             planText: user.planText,
             username: user.username,
-
+            accessToken,
         });
+        
+
     }catch (err) {
         console.error(err);
         return res.status(500).json({ message: "Internal server error" });
