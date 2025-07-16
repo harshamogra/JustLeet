@@ -6,13 +6,13 @@ import jwt from 'jsonwebtoken'
 const router = Router();
 
 const generateAccessToken=(user)=>{
-    return jwt.sign({id:user._id},process.env.JWT_SECRET, {expiresIn:'20s'});
+    return jwt.sign({id:user._id || user.id},process.env.JWT_SECRET, {expiresIn:'20s'});
 }
 
 let refreshTokens = [];
 
 const generateRefreshToken = (user)=>{
-    const token = jwt.sign({id:user._id}, process.env.JWT_REFRESH_SECRET, {expiresIn:'7d'});
+    const token = jwt.sign({id:user.id || user._id}, process.env.JWT_REFRESH_SECRET, {expiresIn:'7d'});
     refreshTokens.push(token);
     return token;
 }
@@ -52,7 +52,7 @@ router.post("/login", async(req, res) => {
        
         const accessToken = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);
-        res.cookie("refreshtoken",refreshToken,{
+        res.cookie("refreshToken",refreshToken,{
             httpOnly:true,
             secure:false,
             sameSite: 'strict',
@@ -62,7 +62,7 @@ router.post("/login", async(req, res) => {
             leetcodeId: user.leetcodeId,
             planText: user.planText,
             username: user.username,
-            accessToken,
+            accessToken
         });
         
 
@@ -71,5 +71,20 @@ router.post("/login", async(req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 });
+
+
+router.post('/refresh', (req,res)=>{
+    const refreshToken = req.cookies.refreshToken;
+    if(!refreshToken || !refreshTokens.includes(refreshToken))
+        return res.status(403).json({message:"Refresh token invalid"});
+    
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err,user)=>{
+        if(err)return res.status(403).json({message:"Invalid refresh token"});
+
+        const newAccessToken = generateAccessToken(user);
+        console.log(user)
+        res.json({accessToken:newAccessToken});
+    })
+})
 
 export default router;
