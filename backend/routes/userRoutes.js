@@ -4,6 +4,19 @@ import axios from "axios";
 
 const router = Router();
 
+router.get('/:userId', async(req,res)=>{
+    const{userId} = req.params;
+    try {
+        const user = await User.findById(userId);
+        if(!user)return res.status(404).json({message: "User not found"});
+        const {password, email, ...other} = user._doc;
+        res.json(other);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({message:"Server error"});
+    }
+})
+
 router.put('/leetcodeId', async(req,res)=>{ //store leetcodeid
     const{userId, leetcodeId} = req.body;
     try {

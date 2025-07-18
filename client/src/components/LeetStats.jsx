@@ -1,8 +1,9 @@
 import React from 'react'
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-function LeetStats() {
-    const percentage = 66; // Example percentage value, you can replace it with dynamic data
+function LeetStats({user}) {
+    const percentage = 66;
+    console.log(user) // Example percentage value, you can replace it with dynamic data
 return (
     <div className="ml-10 mt-12 w-full shadow-lg shadow-gray-900">
         <div className="bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col md:flex-row items-center gap-8">

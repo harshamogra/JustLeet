@@ -6,7 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import problemRoutes from "./routes/problemRoutes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
+import {verifyAccessToken} from "./middleware/authMiddleware.js"
 const app = express();
 morgan("tiny")
 
@@ -19,8 +19,8 @@ app.use(cookieParser());
 
 
 app.use('/api/auth',(authRoutes));
-app.use('/api/user',(userRoutes));
-app.use('/api/problem',(problemRoutes));
+app.use('/api/user',verifyAccessToken,(userRoutes));
+app.use('/api/problem',verifyAccessToken,(problemRoutes));
 
 app.listen(3000,(err)=>{
     if(err)console.error(err);

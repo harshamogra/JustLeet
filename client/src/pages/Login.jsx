@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import {useNavigate} from "react-router-dom";
 import api from "../utils/axios"
 
+
 function Login() {
   const {login} = useAuth();
   const[password, setPassword] = useState("");
@@ -12,13 +13,10 @@ function Login() {
   const navigate = useNavigate();
   const handleSubmit=async(e)=>{
       e.preventDefault();
-      console.log(email);
-      console.log(password)
       try {
         const res = await api.post('/api/auth/login',{email,password});
-        console.log(res.data);
-        const token = res.data.accesstoken;
-        login(token);
+        const accessToken = res.data.accessToken;
+        login(accessToken);
         navigate('/');
       } catch (err) {
         console.error(err);

@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 const router = Router();
 
 const generateAccessToken=(user)=>{
-    return jwt.sign({id:user._id || user.id},process.env.JWT_SECRET, {expiresIn:'20s'});
+    return jwt.sign({id:user._id || user.id},process.env.JWT_SECRET, {expiresIn:'10s'});
 }
 
 let refreshTokens = [];

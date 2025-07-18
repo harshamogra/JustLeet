@@ -1,7 +1,10 @@
 import React from 'react'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
-function TopBar() {
+
+
+
+function TopBar({user}) {
   return (
     <div className='shadow-lg shadow-gray-800 w-full fixed z-10'>
       <nav className="bg-gray-900 p-3 flex items-center justify-between">
@@ -12,6 +15,7 @@ function TopBar() {
         <div className='mr-2 flex flex-row gap-2 cursor-pointer'>
           <div><LogoutIcon/></div>
           <div><AccountCircleIcon /></div>
+          <div>{user && user.username}</div>
         </div>
       </nav>
     </div>
